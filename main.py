@@ -1,6 +1,7 @@
 import tweepy
 import pandas as pd
 import time
+import os  # For handling file paths
 
 # Enter API tokens below
 bearer_token = 'AAAAAAAAAAAAAAAAAAAAAJYdwQEAAAAANxqWHFpvPmdP3R5hGToVZcI%2FA7Q%3Daq0MiDngp74ZUlspMjEI6sNy53lbrHa3loE9YuNVXtPu15tVlU'
@@ -32,6 +33,18 @@ for index, row in df.iterrows():
     text = row['text']
     image_path = row['image']
 
+    # Ensure image extension is correct by checking if the file exists
+    if not os.path.isfile(image_path):
+        # Check different extensions (.jpg, .jpeg, .png)
+        for ext in ['.jpg', '.jpeg', '.png']:
+            new_image_path = os.path.splitext(image_path)[0] + ext
+            if os.path.isfile(new_image_path):
+                image_path = new_image_path
+                break
+        else:
+            print(f"Image not found: {image_path}")
+            continue  # Skip to the next row if no valid image is found
+
     # Upload the image to Twitter with retry logic
     for attempt in range(3):  # Try up to 3 times
         try:
@@ -50,7 +63,7 @@ for index, row in df.iterrows():
         
         time.sleep(5)  # Wait a bit before retrying (5 seconds)
 
-    # Wait for 10 minutes before posting the next tweet
+    # Wait for 5 minutes before posting the next tweet
     if index < len(df) - 1:  # To avoid waiting after the last tweet
         print("Waiting for 5 minutes before posting the next tweet...")
         time.sleep(300)  # 5 minutes in seconds
