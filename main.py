@@ -25,7 +25,7 @@ client = tweepy.Client(
 )
 
 # Load the CSV file with tweets and image paths
-df = pd.read_csv('tweets_day2.csv')
+df = pd.read_csv('tweets_day4.csv')
 
 # Iterate through the rows in the DataFrame and post tweets
 for index, row in df.iterrows():
