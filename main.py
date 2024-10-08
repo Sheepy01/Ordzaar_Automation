@@ -25,7 +25,7 @@ client = tweepy.Client(
 )
 
 # Load the CSV file with tweets and image paths
-df = pd.read_csv('tweets_day1.csv')
+df = pd.read_csv('tweets_day2.csv')
 
 # Iterate through the rows in the DataFrame and post tweets
 for index, row in df.iterrows():
@@ -52,5 +52,5 @@ for index, row in df.iterrows():
 
     # Wait for 10 minutes before posting the next tweet
     if index < len(df) - 1:  # To avoid waiting after the last tweet
-        print("Waiting for 10 minutes before posting the next tweet...")
-        time.sleep(600)  # 10 minutes in seconds
+        print("Waiting for 5 minutes before posting the next tweet...")
+        time.sleep(300)  # 5 minutes in seconds
