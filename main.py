@@ -1,14 +1,15 @@
 import tweepy
 import pandas as pd
 import time
-import os  # For handling file paths
+import os
+import random
 
 # Enter API tokens below
-bearer_token = 'AAAAAAAAAAAAAAAAAAAAAJYdwQEAAAAANxqWHFpvPmdP3R5hGToVZcI%2FA7Q%3Daq0MiDngp74ZUlspMjEI6sNy53lbrHa3loE9YuNVXtPu15tVlU'
-consumer_key = 'pUpVGy2DWTKoakjNi3tZZHbt4'
-consumer_secret = 'SiWdIlct35zDhlFWtnaEHj0z99nGXwo6iwRstTTtPSCgwgrJiQ'
-access_token = '1803410091728916480-7PplouBKbNFVE5ZxcF2sjTMhTW0vVS'
-access_token_secret = 'b07DHtcflCoXfW9l2mv2xLMsfWEBFAmwdzdPngaJt5VMq'
+bearer_token = 'AAAAAAAAAAAAAAAAAAAAAGj8wgEAAAAAlbp6xgpNHH2JsLiQabfZvLFlf1g%3DNVN5iR7fZRpzP7Awx5EXxN6bdlkMs0huOZyZyrsoTyRkYc4RxI'
+consumer_key = '5cJO9UGRY4tGcVXO30LmRTMLR'
+consumer_secret = 'dsmTZ0YfazYPXDgmj4BV3rfD4FUXfK13ACpfRsLvgAwgTbajt8'
+access_token = '1803410091728916480-qf1cP19HtKfDPBRP0o7damrQxy9cOK'
+access_token_secret = 'Ckb9kc35EM6dsmVd2vdjpZVKYgOLK4RmqB66QaW5IJmQL'
 
 # V1 Twitter API Authentication
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -26,12 +27,23 @@ client = tweepy.Client(
 )
 
 # Load the CSV file with tweets and image paths
-df = pd.read_csv('tweets_day5.csv')
+df = pd.read_csv('all_tweets.csv')
+
+# Directory containing images to choose from if no image is specified
+image_directory = "C:/Users/micro/OneDrive/Desktop/Projects/Scripts/Ordzaar_Automation/images/"
+
+# Helper function to pick a random image if no image is specified
+def pick_random_image(directory):
+    images = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    if images:
+        return os.path.join(directory, random.choice(images))
+    else:
+        raise FileNotFoundError("No images found in the specified directory.")
 
 # Iterate through the rows in the DataFrame and post tweets
 for index, row in df.iterrows():
     text = row['text']
-    image_path = row['image']
+    image_path = row['image'] if pd.notna(row['image']) else pick_random_image(image_directory)
 
     # Ensure image extension is correct by checking if the file exists
     if not os.path.isfile(image_path):
@@ -63,7 +75,8 @@ for index, row in df.iterrows():
         
         time.sleep(5)  # Wait a bit before retrying (5 seconds)
 
-    # Wait for 5 minutes before posting the next tweet
+    # Wait for a random time between 30 seconds and 2 minutes before posting the next tweet
     if index < len(df) - 1:  # To avoid waiting after the last tweet
-        print("Waiting for 5 minutes before posting the next tweet...")
-        time.sleep(300)  # 5 minutes in seconds
+        wait_time = random.randint(30, 60)  # Random wait time between 30 seconds and 2 minutes
+        print(f"Waiting for {wait_time} seconds before posting the next tweet...")
+        time.sleep(wait_time)
