@@ -77,6 +77,6 @@ for index, row in df.iterrows():
 
     # Wait for a random time between 30 seconds and 2 minutes before posting the next tweet
     if index < len(df) - 1:  # To avoid waiting after the last tweet
-        wait_time = random.randint(30, 60)  # Random wait time between 30 seconds and 2 minutes
+        wait_time = random.randint(20, 35)  # Random wait time between 30 seconds and 2 minutes
         print(f"Waiting for {wait_time} seconds before posting the next tweet...")
         time.sleep(wait_time)
